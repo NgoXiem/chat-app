@@ -1,0 +1,6 @@
+fastapi==0.95.2
+uvicorn==0.22.0
+websockets==11.0.3
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart-0.0.6
