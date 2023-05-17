@@ -1,10 +1,10 @@
 from pydantic import BaseSettings
-
-
+import secrets
 class Settings(BaseSettings):
-    ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
-    SECRET_KEY: str
+    algorithm: str = "HS256"
+    access_token_expire_minutes: int = 30
+    secret_key: str = secrets.token_urlsafe(32)
+    db_uri: str ="mongodb://localhost:27017"
 
     class Config:
         env_file = ".env"

@@ -3,3 +3,4 @@
 htmlcov
 *\venv
 *.env
+*.pyc

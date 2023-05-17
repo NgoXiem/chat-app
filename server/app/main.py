@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 
-from app.api.endpoints import users, messages
+from app.api.endpoints import users, login
 
 app = FastAPI()
 
 app.include_router(users.router)
-# app.include_router(messages.router)
+app.include_router(login.router)
