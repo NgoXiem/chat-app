@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from app.api.endpoints import users, login
 
 app = FastAPI()
