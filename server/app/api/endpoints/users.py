@@ -6,9 +6,11 @@ from fastapi import APIRouter, Body, Depends, HTTPException, status
 from fastapi.responses import Response, JSONResponse
 from fastapi.encoders import jsonable_encoder
 
-from app.schemas.user import User
+from app.schemas.user import User, UserRegistrationRequest, UserInDB
 from app.api import deps
 from app.db import db
+
+from app.core.security import get_password_hash, verify_password
 
 from bson.objectid import ObjectId
 
@@ -23,14 +25,25 @@ router = APIRouter()
 
 
 # Create a new user
-@router.post("/", response_description="Add new user", response_model=User)
-async def create_user(user: User = Body(...)):
+@router.post("/register", response_description="Add new user", response_model=User)
+async def create_user(user: UserRegistrationRequest = Body(...)) -> User:
+    
     client, database = await db.connect_to_mongo()
-    user = jsonable_encoder(user)
-    new_user = await database["users"].insert_one(user)
-    created_user = await database["users"].find_one({"_id": ObjectId(new_user.inserted_id)})
-    return created_user
-    # return JSONResponse(status_code=status.HTTP_201_CREATED, content=created_user)
+
+    # Check if user already exists
+    if await database["users"].find_one({"user_name": user.user_name}):
+        raise HTTPException(status_code=400, detail="user_name already registered")
+    else:
+        user = UserInDB(
+            user_name=user.user_name,
+            email=user.email,
+            disabled=user.disabled,
+            hashed_password=get_password_hash(user.password),
+        )
+        user = jsonable_encoder(user)
+        new_user = await database["users"].insert_one(user)
+        created_user = await database["users"].find_one({"_id": ObjectId(new_user.inserted_id)})
+        return User(**created_user)
 
 
 @router.get("/users", response_model=List[User])

@@ -1,21 +1,40 @@
 from pydantic import BaseModel, Field
 
 class User(BaseModel):
-    username: str = Field(...)
+    user_name: str = Field(...)
     email: str = Field(...)
-    full_name: str = Field(...)
     disabled: bool = Field(...)
     class Config:
         schema_extra = {
             "example": {
-                "username": "johndoe",
+                "user_name": "johndoe",
                 "email": "john@doe.com",
-                "full_name": "John Doe",
                 "disabled": False,
             }
-        }
+        },
+        orm_mode = True
 
 class UserInDB(User):
-    hashed_password: str = Field(...)
+    hashed_password: str = Field(...),
+    class Config:
+        orm_mode = True
+
+class UserRegistrationRequest(BaseModel):
+    user_name: str = Field(...)
+    email: str = Field(...)
+    password: str = Field(...)
+    confirm: str = Field(...)
+    disabled: bool = False
+    class Config:
+        schema_extra = {
+            "example": {
+                "user_name": "johndoe",
+                "email": "john@doe.com",
+                "password": "password",
+                "confirm": "password",
+            }
+        },
+        orm_mode = True
+
 
 

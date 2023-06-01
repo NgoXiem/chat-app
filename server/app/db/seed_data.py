@@ -2,7 +2,7 @@ from pymongo import MongoClient
 
 users = [
     {   
-        "username": "johndoe",
+        "user_name": "johndoe",
         "email": "john@doe.com",
         "full_name": "John Doe",
         "disabled": False

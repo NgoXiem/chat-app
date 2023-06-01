@@ -11,13 +11,13 @@ const authHeader = (token:string) => {
     }
 }
 
-export const api = {
-    async register(email: string, password: string){
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/auth/register`, {email, password});
+export const apis = {
+    async register(user_name: string, email: string, password: string, confirm: string){
+        const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/register`, {user_name, email, password, confirm});
         return response.data;
     },
     async login(email: string, password: string){
-        const response = await axios.post(`${process.env.VUE_APP_API_URL}/auth/login`, {email, password});
+        const response = await axios.post(`${import.meta.env.VITE_APP_API_URL}/login`, {email, password});
         return response.data;
     }
 }

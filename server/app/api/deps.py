@@ -11,7 +11,7 @@ from app.schemas.token import TokenData
 
 fake_users_db = {
     "johndoe": {
-        "username": "johndoe",
+        "user_name": "johndoe",
         "full_name": "John Doe",
         "email": "johndoe@example.com",
         "hashed_password": "$2b$12$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW",
@@ -21,9 +21,9 @@ fake_users_db = {
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-def get_user(db, username: str):
-    if username in db:
-        user_dict = db[username]
+def get_user(db, user_name: str):
+    if user_name in db:
+        user_dict = db[user_name]
         return UserInDB(**user_dict)
 
 
@@ -35,13 +35,13 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     )
     try:
         payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
-        username: str = payload.get("sub")
-        if username is None:
+        user_name: str = payload.get("sub")
+        if user_name is None:
             raise credentials_exception
-        token_data = TokenData(username=username)
+        token_data = TokenData(user_name=user_name)
     except JWTError:
         raise credentials_exception
-    user = get_user(fake_users_db, username=token_data.username)
+    user = get_user(fake_users_db, user_name=token_data.user_name)
     if user is None:
         raise credentials_exception
     return user
