@@ -19,6 +19,18 @@ class UserInDB(User):
     class Config:
         orm_mode = True
 
+class UserLoginRequest(BaseModel):
+    user_name: str = Field(...)
+    password: str = Field(...)
+    class Config:
+        schema_extra = {
+            "example": {
+                "user_name": "johndoe",
+                "password": "password",
+            }
+        },
+        orm_mode = True
+
 class UserRegistrationRequest(BaseModel):
     user_name: str = Field(...)
     email: str = Field(...)

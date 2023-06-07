@@ -39,6 +39,10 @@ import { RouterLink } from 'vue-router'
 import { reactive, computed} from "vue"
 import { required } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
+import { useUserStore } from "@/stores/users"
+
+
+const store = useUserStore()
 
 const state = reactive({
   user_name: '',
@@ -54,10 +58,14 @@ const rules = computed(() => { return {
 const v$ = useVuelidate(rules, state)
 
 const submitForm = async (e:Event) => {
-  e.preventDefault();
-  const result = await v$.value.$validate();
-  if(result) {
-    console.log("success")
+  try {
+    e.preventDefault();
+    const result = await v$.value.$validate();
+    if(result) {
+      store.login(state.user_name, state.password)
+    }
+  } catch (error) {
+    console.log(error)
   }
 }
 </script>

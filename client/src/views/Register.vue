@@ -82,17 +82,16 @@ const rules = computed(() => { return {
 
 const v$ = useVuelidate(rules, state)
 
-const submitForm = async (e:Event) => {
+const submitForm = async(e:Event) => {
   e.preventDefault();
   try {
     const result = await v$.value.$validate();
     if(result) {
-      store.register(state.user_name, state.email, state.password, state.confirm);
+      store.register(state.user_name, state.email, state.password, state.confirm)
     }
   } catch (error) {
     console.error(error);
   }
-  
 }
 
 </script>
