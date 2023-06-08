@@ -18,7 +18,8 @@ class UserInDB(User):
     hashed_password: str = Field(...),
     class Config:
         orm_mode = True
-
+        
+        
 class UserLoginRequest(BaseModel):
     user_name: str = Field(...)
     password: str = Field(...)

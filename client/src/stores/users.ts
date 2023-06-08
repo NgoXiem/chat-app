@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
 import { apis } from '@/apis/api'
-import { useRouter } from 'vue-router'
 
 interface State {
   token: string | null
   isLogedIn: boolean
   user_info: UserInfo | null
   error_login: string | null
+  error_register: string | null
 }
 
 interface UserInfo {
@@ -17,14 +17,13 @@ interface UserInfo {
   avatar: string | null
 }
 
-const router = useRouter()
-
 export const useUserStore = defineStore('users', {
   state: (): State => ({
     token: null,
     isLogedIn: false,
     user_info: null,
-    error_login: null
+    error_login: null,
+    error_register: null
   }),
 
   actions: {
@@ -43,7 +42,6 @@ export const useUserStore = defineStore('users', {
      try {
       const { data } = await apis.login(user_name, password)
       if(data) {
-        console.log(data)
         localStorage.setItem('token', data.access_token)
         this.token = data.access_token
         this.isLogedIn = true
@@ -59,20 +57,26 @@ export const useUserStore = defineStore('users', {
     },
   
     async register(user_name:string, email: string, password:string, confirm:string) {
-      const { data } = await apis.register(user_name, email, password, confirm)
-      console.log(data)
+      try {
+        const { data } = await apis.register(user_name, email, password, confirm)
+        this.user_info = data
+        this.isLogedIn = true
+        this.redirect()
+      } catch(error) {
+        this.error_register = error?.message
+      }
     },
 
     async getUserInfo() {
-      const { data } = await apis.getUserInfo(this.token)
+      const { data } = await apis.getUserInfo()
       this.user_info = data
     },
 
     redirect() {
-      if(this.user_info?.avatar === null) {
-        router.push({name: 'setAvatar'})
+      if(this.user_info?.avatar) {
+        this.router.push({name: 'chat'})
       } else {  
-        router.push({name: 'chat'})
+        this.router.push({name: 'setAvatar'})
       }
     },
 

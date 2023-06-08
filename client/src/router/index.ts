@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Chat from '@/views/Chat.vue'
+import { apis } from '@/apis/api'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -7,14 +7,11 @@ const router = createRouter({
     {
       path: '/',
       name: 'chat',
-      component: Chat
+      component: () => import('../views/Chat.vue')
     },
     {
       path: '/login',
       name: 'login',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/Login.vue')
     },
     {
@@ -26,8 +23,25 @@ const router = createRouter({
       path: '/setAvatar',
       name: 'setAvatar',
       component: () => import('../components/SetAvatar.vue')
-    }
+    }, 
+    {
+      path: '/*', redirect: '/',
+    },
   ]
+})
+
+router.beforeEach(async (to, from, next) => {
+  if ((to.name === 'login' || to.name === 'register')) {
+    next();
+    return;
+  }
+  const { data } = await apis.getUserInfo();
+  if (data) next();
+  else next({ name: 'login' })
+})
+
+router.onError((error) => {
+  router.push({name: 'login'})
 })
 
 export default router

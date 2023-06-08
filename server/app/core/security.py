@@ -14,8 +14,8 @@ def get_password_hash(password):
     return pwd_context.hash(password)
 
 
-def authenticate_user(fake_db, user_name: str, password: str):
-    user = deps.get_user(fake_db, user_name)
+async def authenticate_user(db, user_name: str, password: str):
+    user = await deps.get_user(db, user_name)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):

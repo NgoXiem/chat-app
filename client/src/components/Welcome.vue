@@ -4,7 +4,7 @@
       <h1>
         Welcome, <span>{{userName}}!</span>
       </h1>
-      <h3>Please select a chat to Start messaging.</h3>
+      <h3>Please select a chat to start messaging.</h3>
     </div>
 </template>
 
@@ -20,6 +20,9 @@ const userName = ref("")
     align-items: center;
     color: white;
     flex-direction: column;
+    h3 {
+      text-align: center;
+    }
     img {
     height: 20rem;
     }
