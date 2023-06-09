@@ -24,8 +24,8 @@ router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@router.post("/register", response_description="Add new user", response_model=User)
-async def create_user(user: UserRegistrationRequest = Body(...)) -> User: 
+@router.post("/register", response_description="Add new user", response_model=Token)
+async def create_user(user: UserRegistrationRequest = Body(...)) -> Token: 
     client, database = await db.connect_to_mongo()
     # Check if user already exists
     if await database["users"].find_one({"user_name": user.user_name}):
@@ -39,8 +39,13 @@ async def create_user(user: UserRegistrationRequest = Body(...)) -> User:
         )
         user = jsonable_encoder(user)
         new_user = await database["users"].insert_one(user)
-        created_user = await database["users"].find_one({"_id": ObjectId(new_user.inserted_id)})
-        return User(**created_user)
+        # created_user = await database["users"].find_one({"_id": ObjectId(new_user.inserted_id)})
+        # return User(**created_user)
+        access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
+        access_token = security.create_access_token(
+            data={"sub": user["user_name"]}, expires_delta=access_token_expires
+        )
+        return {"access_token": access_token, "token_type": "bearer"}
 
 
 @router.post("/login", response_description="Login user", response_model=Token)

@@ -1,5 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { apis } from '@/apis/api'
+
+const useRoutes = async (to, from, next) => {
+  if(localStorage.getItem('token')) {
+    next({ name: 'chat' })
+  } else next()
+}
 
 const router = createRouter({
   history: createWebHistory(),
@@ -12,11 +17,13 @@ const router = createRouter({
     {
       path: '/login',
       name: 'login',
+      beforeEnter: useRoutes,
       component: () => import('../views/Login.vue')
     },
     {
       path: '/register',
       name: 'register',
+      beforeEnter: useRoutes,
       component: () => import('../views/Register.vue')
     },
     {
@@ -31,13 +38,11 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  if ((to.name === 'login' || to.name === 'register')) {
-    next();
-    return;
+  if(!localStorage.getItem('token') && to.name !== 'login' && to.name !== 'register' ) {
+    next({ name: 'login' })
+  } else {
+    next()
   }
-  const { data } = await apis.getUserInfo();
-  if (data) next();
-  else next({ name: 'login' })
 })
 
 router.onError((error) => {

@@ -5,8 +5,8 @@ import axios from 'axios';
 * 1. Write function to create authorization header
 * 2. List all api endpoints in an object then export it
 */
-const authHeader = () => {
-  const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
+const authHeader = (token: string) => {
+  // const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
   if (token) {
     return { Authorization: `Bearer ${token}` };
   }
@@ -21,8 +21,8 @@ export const apis = {
     return axios.post(`${import.meta.env.VITE_APP_API_URL}/login`, {user_name, password});
   },
 
-  getUserInfo(){
-    return axios.get(`${import.meta.env.VITE_APP_API_URL}/user/me`, { headers: authHeader() });
+  getUserInfo(token: string){
+    return axios.get(`${import.meta.env.VITE_APP_API_URL}/user/me`, { headers: authHeader(token) });
   }
 }
 

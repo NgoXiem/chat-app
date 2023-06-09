@@ -45,7 +45,7 @@ export const useUserStore = defineStore('users', {
         localStorage.setItem('token', data.access_token)
         this.token = data.access_token
         this.isLogedIn = true
-        this.getUserInfo()
+        this.getUserInfo(data.access_token)
         this.redirect()
       } else {
         this.logout()
@@ -59,16 +59,19 @@ export const useUserStore = defineStore('users', {
     async register(user_name:string, email: string, password:string, confirm:string) {
       try {
         const { data } = await apis.register(user_name, email, password, confirm)
-        this.user_info = data
+        localStorage.setItem('token', data.access_token)
+        this.token = data.access_token
         this.isLogedIn = true
+        this.getUserInfo(data.access_token)
         this.redirect()
       } catch(error) {
+        this.logout()
         this.error_register = error?.message
       }
     },
 
-    async getUserInfo() {
-      const { data } = await apis.getUserInfo()
+    async getUserInfo(token: string) {
+      const { data } = await apis.getUserInfo(token)
       this.user_info = data
     },
 
