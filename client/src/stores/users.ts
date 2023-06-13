@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { apis } from '@/apis/api'
+import { Buffer } from "buffer";
 
 interface State {
   token: string | null
@@ -7,6 +8,7 @@ interface State {
   user_info: UserInfo | null
   error_login: string | null
   error_register: string | null
+  avatars: string[]
 }
 
 interface UserInfo {
@@ -14,7 +16,7 @@ interface UserInfo {
   user_name: string
   email: string
   disabled: boolean, 
-  avatar: string | null
+  avatar: string | null,
 }
 
 export const useUserStore = defineStore('users', {
@@ -23,7 +25,8 @@ export const useUserStore = defineStore('users', {
     isLogedIn: false,
     user_info: null,
     error_login: null,
-    error_register: null
+    error_register: null,
+    avatars: []
   }),
 
   actions: {
@@ -45,7 +48,8 @@ export const useUserStore = defineStore('users', {
         localStorage.setItem('token', data.access_token)
         this.token = data.access_token
         this.isLogedIn = true
-        this.getUserInfo(data.access_token)
+        const user = await this.getUserInfo(data.access_token)
+        localStorage.setItem('user', JSON.stringify(user))
         this.redirect()
       } else {
         this.logout()
@@ -62,7 +66,8 @@ export const useUserStore = defineStore('users', {
         localStorage.setItem('token', data.access_token)
         this.token = data.access_token
         this.isLogedIn = true
-        this.getUserInfo(data.access_token)
+        const user = await this.getUserInfo(data.access_token)
+        localStorage.setItem('user', JSON.stringify(user))
         this.redirect()
       } catch(error) {
         this.logout()
@@ -71,8 +76,10 @@ export const useUserStore = defineStore('users', {
     },
 
     async getUserInfo(token: string) {
+      this.token = localStorage.getItem('token') ? localStorage.getItem('token') : null
       const { data } = await apis.getUserInfo(token)
       this.user_info = data
+      return this.user_info
     },
 
     redirect() {
@@ -85,9 +92,26 @@ export const useUserStore = defineStore('users', {
 
     async logout() {
       localStorage.removeItem('token')
+      localStorage.removeItem('user')
       this.token = null
       this.isLogedIn = false
       this.user_info = null
+      this.router.push({name: 'login'})
+    },
+
+    async fetchAvatars() {
+      for(let i = 0; i < 5; i++) {
+        const { data } = await apis.fetchAvatars()
+        const svgBase64 = Buffer.from(data).toString('base64');
+        this.avatars.push(svgBase64)
+      }
+    },
+
+    async setProfilePicture(avatar: string) {
+      const { data } = await apis.setAvatar(avatar, this.token)
+      this.user_info.avatar = data?.avatar
+      localStorage.setItem('user', JSON.stringify(this.user_info))
+      this.router.push({name: 'chat'})
     }
   }
 })

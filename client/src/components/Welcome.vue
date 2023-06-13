@@ -1,16 +1,16 @@
 <template>
     <div class="welcome__container">
       <img src="../assets/robot.gif" alt="" />
-      <h1>
-        Welcome, <span>{{userName}}!</span>
-      </h1>
+      <h2>Welcome, <span>{{store?.user_info?.user_name}}</span> !</h2>
       <h3>Please select a chat to start messaging.</h3>
     </div>
 </template>
 
 <script setup lang="ts" scoped>
-import {ref} from "vue";
-const userName = ref("")
+import {useUserStore} from "@/stores/users";
+
+const store = useUserStore()
+
 </script>
 
 <style lang="scss">

@@ -1,28 +1,22 @@
 <template>
     <div v-if="isLoading" class="set-avatar__container">
-        <img src={loader} alt="loader" class="loader" />
+        <img src="../assets/loader.gif" alt="loader" class="loader" />
     </div>
     <div v-else class="set-avatar__container">
         <div class="title-container">
         <h1>Pick an Avatar as your profile picture</h1>
         </div>
         <div class="avatars">
-        <!-- {avatars.map((avatar, index) => {
-            return (
-            <div
-                class={`avatar ${
-                selectedAvatar === index ? "selected" : ""
-                }`}
+            <div v-for = "(avatar, index) in store.avatars" :key="index"
+                :class="`avatar ${selectedAvatar === index ? 'selected' : ''}`"
             >
                 <img
-                src={`data:image/svg+xml;base64,${avatar}`}
+                :src="`data:image/svg+xml;base64,${avatar}`"
                 alt="avatar"
-                key={avatar}
-                onClick={() => setSelectedAvatar(index)}
+                :key="avatar"
+                @click="setSelectedAvatar(index)"
                 />
             </div>
-            );
-        })} -->
         </div>
         <button @click="setProfilePicture" class="submit-btn">
         Set as Profile Picture
@@ -32,16 +26,31 @@
 
 <script setup lang="ts">
 import {ref, onMounted} from "vue";
-
+import {useUserStore} from "@/stores/users";
+const store = useUserStore()
 const isLoading = ref(false)
+const selectedAvatar = ref(0)
 
-onMounted(() => {
-    // Todo: Fetch list of avatars to display on this page
+onMounted(async() => {
+    try {
+        isLoading.value = true
+        await store.fetchAvatars()
+        isLoading.value = false
+    } catch (error) {
+        isLoading.value = false
+        console.error(error)
+    }
 })
 
 const setProfilePicture = () => {
-    // Todo: persist profile picture for this user
+    isLoading.value = true
+    store.setProfilePicture(store.avatars[selectedAvatar.value])
 }
+
+const setSelectedAvatar = (index: number) => {
+    selectedAvatar.value = index
+}
+
 </script>
 
 <style lang="scss" scoped>

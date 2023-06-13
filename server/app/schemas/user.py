@@ -1,15 +1,18 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 class User(BaseModel):
     user_name: str = Field(...)
     email: str = Field(...)
     disabled: bool = Field(...)
+    avatar: str | None = None
     class Config:
         schema_extra = {
             "example": {
                 "user_name": "johndoe",
                 "email": "john@doe.com",
                 "disabled": False,
+                "avatar": ""
             }
         },
         orm_mode = True

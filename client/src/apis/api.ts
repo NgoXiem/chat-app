@@ -17,12 +17,20 @@ export const apis = {
     return axios.post(`${import.meta.env.VITE_APP_API_URL}/register`, {user_name, email, password, confirm})
   },
   
-  login(user_name: string, password: string){
+  login(user_name: string, password: string) {
     return axios.post(`${import.meta.env.VITE_APP_API_URL}/login`, {user_name, password});
   },
 
-  getUserInfo(token: string){
+  getUserInfo(token: string) {
     return axios.get(`${import.meta.env.VITE_APP_API_URL}/user/me`, { headers: authHeader(token) });
+  },
+
+  fetchAvatars() {
+    return axios.get(`https://api.multiavatar.com/${Math.round(Math.random() * 1000)}`);
+  },
+
+  setAvatar(avatar: string, token: string) {
+    return axios.post(`${import.meta.env.VITE_APP_API_URL}/user/avatar`, { avatar }, { headers: authHeader(token) });
   }
 }
 

@@ -80,3 +80,14 @@ async def get_all_users():
     async for user in collection.find():
         users.append(user)
     return users
+
+
+@router.post("/user/avatar", response_model=User)
+async def upload_avatar(token: Annotated[str, Depends(oauth2_scheme)], payload: dict = Body(...)):
+    client, database = await db.connect_to_mongo()
+    current_user = await deps.get_current_user(database, token)
+    if current_user:
+        await database["users"].update_one({"user_name": current_user.user_name}, {"$set": {"avatar": payload["avatar"]}})
+        return current_user
+    else:
+        raise HTTPException(status_code=404, detail="User not found")

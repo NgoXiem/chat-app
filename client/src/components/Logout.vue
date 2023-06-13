@@ -1,15 +1,18 @@
 <template>
-    <button class="logout__button" @click="handleClick">
+    <button class="logout__button" @click="logout">
         Logout
     </button>
 </template>
 
 <script setup lang="ts">
-const handleClick = () => {
+import { useUserStore } from "@/stores/users"
 
+const store = useUserStore()
+
+const logout = () => {
+    store.logout()
 }
 </script>
-
 <style lang="scss" scoped>
 
 .logout__button {
