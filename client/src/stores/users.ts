@@ -8,7 +8,9 @@ interface State {
   user_info: UserInfo | null
   error_login: string | null
   error_register: string | null
-  avatars: string[]
+  avatars: string[],
+  contacts: UserInfo[],
+  currentChat: UserInfo | null
 }
 
 interface UserInfo {
@@ -26,8 +28,16 @@ export const useUserStore = defineStore('users', {
     user_info: null,
     error_login: null,
     error_register: null,
-    avatars: []
+    avatars: [], 
+    contacts: [],
+    currentChat: null
   }),
+  
+  getters: {
+    availableContacts() {
+      return this.contacts.filter(contact => contact.user_name !== this.user_info?.user_name)
+    }
+  },
 
   actions: {
     async login(user_name: string, password:string) {
@@ -76,10 +86,14 @@ export const useUserStore = defineStore('users', {
     },
 
     async getUserInfo(token: string) {
-      this.token = localStorage.getItem('token') ? localStorage.getItem('token') : null
-      const { data } = await apis.getUserInfo(token)
-      this.user_info = data
-      return this.user_info
+      try {
+        this.token = localStorage.getItem('token') ? localStorage.getItem('token') : null
+        const { data } = await apis.getUserInfo(token)
+        this.user_info = data
+        return this.user_info
+      } catch(error) {
+        this.logout()
+      }
     },
 
     redirect() {
@@ -112,6 +126,15 @@ export const useUserStore = defineStore('users', {
       this.user_info.avatar = data?.avatar
       localStorage.setItem('user', JSON.stringify(this.user_info))
       this.router.push({name: 'chat'})
+    },
+
+    async fetchUsers() {
+      const { data } = await apis.fetchUsers(this.token)
+      this.contacts = data
+    },
+
+    setCurrentChat(contact: UserInfo) {
+      this.currentChat = contact
     }
   }
 })

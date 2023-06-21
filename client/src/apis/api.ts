@@ -31,6 +31,10 @@ export const apis = {
 
   setAvatar(avatar: string, token: string) {
     return axios.post(`${import.meta.env.VITE_APP_API_URL}/user/avatar`, { avatar }, { headers: authHeader(token) });
+  },
+
+  fetchUsers(token: string) {
+    return axios.get(`${import.meta.env.VITE_APP_API_URL}/users`, { headers: authHeader(token) });
   }
 }
 

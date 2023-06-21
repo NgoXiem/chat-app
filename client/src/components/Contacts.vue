@@ -1,49 +1,50 @@
 <template>
-       <div class="contacts__container" v-if="currentUserImage">
+       <div class="contacts__container" v-if="store.user_info?.avatar">
           <div class="brand">
             <img src="../assets/logo.svg" alt="logo" />
             <h3>chat</h3>
           </div>
           <div class="contacts">
-            <!-- {contacts.map((contact, index) => {
-              return (
-                <div
-                  key={contact._id}
-                  class={`contact ${
-                    index === currentSelected ? "selected" : ""
-                  }`}
-                  onClick={() => changeCurrentChat(index, contact)}
+             <div
+                v-for="contact, index in store.availableContacts"
+                :key="contact.id"
+                :class="`contact ${index === currentSelected ? 'selected' : ''}`"
+                @click="() => changeCurrentChat(index, contact)"
                 >
                   <div class="avatar">
                     <img
-                      src={`data:image/svg+xml;base64,${contact.avatarImage}`}
+                      :src="`data:image/svg+xml;base64,${contact.avatar}`"
                       alt=""
                     />
                   </div>
                   <div class="username">
-                    <h3>{contact.username}</h3>
+                    <h3>{{contact.user_name}}</h3>
                   </div>
                 </div>
-              );
-            })} -->
           </div>
           <div class="current-user">
             <div class="avatar">
               <img
-                :src="`data:image/svg+xml;base64,${currentUserImage}`"
+                :src="`data:image/svg+xml;base64,${store.user_info?.avatar}`"
                 alt="avatar"
               />
             </div>
             <div class="username">
-              <h2>{{currentUserName}}</h2>
+              <h2>{{store.user_info?.user_name}}</h2>
             </div>
           </div>
         </div>
 </template>
 <script setup lang="ts">
 import {ref} from "vue" 
-const currentUserImage = ref(undefined)
-const currentUserName = ref(undefined)
+import {useUserStore} from "@/stores/users";
+
+const store = useUserStore()
+const currentSelected = ref(0)
+const changeCurrentChat = (index, contact) => {
+  currentSelected.value = index
+  store.setCurrentChat(contact)
+}
 
 </script>
 

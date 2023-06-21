@@ -77,7 +77,7 @@ async def get_all_users():
     client, database = await db.connect_to_mongo()
     collection = database["users"]
     users = []
-    async for user in collection.find():
+    async for user in collection.find({"disabled": False}):
         users.append(user)
     return users
 

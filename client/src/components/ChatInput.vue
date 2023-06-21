@@ -9,9 +9,9 @@
       <form class="input-container" @submit="(event) => sendChat(event)">
         <input
           type="text"
-          placeholder="type your message here"
+          placeholder="Type your message here"
           @change="(e) => setMsg(e)"
-          value={msg}
+          :value="msg"
         />
         <button type="submit">
             Send
@@ -21,6 +21,10 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+
+const msg = ref('')
+
 const sendChat = (event:Event) => {
 
 }
@@ -28,6 +32,7 @@ const sendChat = (event:Event) => {
 const setMsg = (e:Event) => {
 
 }
+
 </script>
 
 
@@ -106,7 +111,7 @@ const setMsg = (e:Event) => {
         }
         }
         button {
-        padding: 0.3rem 2rem;
+        padding: 0.8rem 2rem;
         border-radius: 2rem;
         display: flex;
         justify-content: center;

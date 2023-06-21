@@ -1,33 +1,43 @@
 <template>
-    <div class="chat__container">
-        <div class="container">
-            <Contacts :contacts="contacts" :changeChat="handleChatChange" />
-            <Welcome v-if="!currentChat"/>
-            <ChatContainer v-else :currentChat="currentChat" :socket="socket" />
-        </div>
-      </div>
+  <div class="page-chat__container">
+    <div v-if="isLoading">
+      <img src="../assets/loader.gif" alt="loader" class="loader" />
+    </div>
+    <div class="container" v-else>
+      <Contacts :changeChat="handleChatChange" />
+      <Welcome v-if="!store.currentChat"/>
+      <ChatContainer v-else :socket="socket" />
+    </div>
+  </div>
 </template>
 
 
 <script setup lang="ts">
 import { ref } from 'vue';
-
+import {useUserStore} from "@/stores/users";
 import Contacts from '@/components/Contacts.vue';
 import Welcome from '@/components/Welcome.vue';
 import ChatContainer from '@/components/ChatContainer.vue';
+import { onMounted } from 'vue';
 
-const contacts = ref([]);
-const currentChat = ref(undefined);
+const store = useUserStore()
 const socket = ref(undefined)
+let isLoading = ref(false)
 
 const handleChatChange = () => {
 
 }
 
+onMounted(async() => {
+  isLoading.value = true
+  await store.fetchUsers()
+  isLoading.value = false
+})
+
 </script>
 
 <style lang="scss" scoped>
-.chat__container {
+.page-chat__container {
   height: 100vh;
   width: 100vw;
   display: flex;

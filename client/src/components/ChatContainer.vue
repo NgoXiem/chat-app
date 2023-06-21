@@ -1,47 +1,46 @@
 <template>
-    <div class="chat__container">
-      <div className="chat-header">
-        <div className="user-details">
-          <div className="avatar">
-            <!-- <img
-              :src="`data:image/svg+xml;base64,${currentChat.avatarImage}`"
+    <div class="chat__container" v-if="userStore?.currentChat">
+      <div class="chat-header">
+        <div class="user-details">
+          <div class="avatar">
+            <img
+              :src="`data:image/svg+xml;base64,${userStore?.currentChat?.avatar}`"
               alt="image"
-            /> -->
+            />
           </div>
-          <div className="username">
-            <h3>{{currentChat.username}}</h3>
+          <div class="username">
+            <h3>{{userStore?.currentChat?.user_name}}</h3>
           </div>
         </div>
         <Logout />
       </div>
-      <div className="chat-messages">
-        <!-- {messages.map((message) => {
-          return (
-            <div ref={scrollRef} key={uuidv4()}>
-              <div
-                className={`message ${
-                  message.fromSelf ? "sended" : "recieved"
-                }`}
-              >
-                <div className="content ">
-                  <p>{message.message}</p>
-                </div>
-              </div>
+      <div class="chat-messages">
+        <div ref={scrollRef} key={uuidv4()} v-for="message in messageStore.messages">
+          <div
+            :class="`message ${message.fromSelf ? 'sended' : 'recieved'}`"
+          >
+            <div class="content ">
+              <p>{{message.message}}</p>
             </div>
-          );
-        })} -->
+          </div>
+        </div>
       </div>
-      <ChatInput handleSendMsg={handleSendMsg} />
+      <ChatInput :handleSendMsg="handleSendMsg" />
     </div>
 </template>
 
 <script setup lang="ts">
-
-import {ref} from "vue";
 import ChatInput from './ChatInput.vue';
 import Logout from './Logout.vue';
+import {useUserStore} from "@/stores/users";
+import {useMessageStore} from "@/stores/messages";
 
-const currentChat = ref({})
+const userStore = useUserStore()
+const messageStore = useMessageStore()
+
+const handleSendMsg = () => {
+
+}
 
 </script>
 
