@@ -1,5 +1,4 @@
 from pydantic import BaseModel, Field
-from typing import Optional
 
 class User(BaseModel):
     user_name: str = Field(...)
@@ -18,11 +17,19 @@ class User(BaseModel):
         orm_mode = True
 
 class UserInDB(User):
+    _id: str = Field(..., alias="_id")
     hashed_password: str = Field(...),
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
         
-        
+
+class UserOut(User):
+    _id: str = Field(..., alias="_id")
+    class Config:
+        orm_mode = True
+        allow_population_by_field_name = True
+
 class UserLoginRequest(BaseModel):
     user_name: str = Field(...)
     password: str = Field(...)

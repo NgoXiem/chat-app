@@ -8,10 +8,9 @@
       </div>
       <form class="input-container" @submit="(event) => sendChat(event)">
         <input
-          type="text"
-          placeholder="Type your message here"
-          @change="(e) => setMsg(e)"
-          :value="msg"
+            type="text"
+            placeholder="Type your message here"
+            v-model = "msg"
         />
         <button type="submit">
             Send
@@ -22,16 +21,25 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-
+import { useMessageStore } from '@/stores/messages';
 const msg = ref('')
 
-const sendChat = (event:Event) => {
+const messageStore = useMessageStore()
 
+const sendChat = async (event:Event) => {
+    event.preventDefault()
+    const message = {
+        message: msg.value,
+        fromSelf: true,
+        to: "",
+        created_at: new Date().toLocaleTimeString()
+    }
+    console.log(message)
+    // socket.value.emit("send-message", message)
+    await messageStore.createNewMessage(message)
+    msg.value = ""
 }
 
-const setMsg = (e:Event) => {
-
-}
 
 </script>
 

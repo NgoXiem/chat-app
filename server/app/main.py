@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api.endpoints import users, login
+from app.api.endpoints import users
+from app.api.endpoints import messages
 from fastapi.middleware.cors import CORSMiddleware
 
 
@@ -15,4 +16,4 @@ app.add_middleware(
 )
 
 app.include_router(users.router)
-app.include_router(login.router)
+app.include_router(messages.router)

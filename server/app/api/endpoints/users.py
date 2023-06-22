@@ -11,13 +11,11 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.config import settings
 from app.core import security
-from app.schemas.user import User, UserRegistrationRequest, UserInDB, UserLoginRequest
+from app.schemas.user import User, UserRegistrationRequest, UserInDB, UserLoginRequest, UserOut
 from app.schemas.token import Token
 from app.api import deps
 from app.db import db
 from app.core.security import get_password_hash, verify_password
-
-from bson.objectid import ObjectId
 
 
 router = APIRouter()
@@ -39,8 +37,6 @@ async def create_user(user: UserRegistrationRequest = Body(...)) -> Token:
         )
         user = jsonable_encoder(user)
         new_user = await database["users"].insert_one(user)
-        # created_user = await database["users"].find_one({"_id": ObjectId(new_user.inserted_id)})
-        # return User(**created_user)
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
         access_token = security.create_access_token(
             data={"sub": user["user_name"]}, expires_delta=access_token_expires
@@ -65,14 +61,14 @@ async def login_for_access_token(payload: UserLoginRequest = Body(...)) -> Token
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.get("/user/me", response_model=User) 
+@router.get("/user/me", response_model=UserOut)
 async def get_user_me(token: Annotated[str, Depends(oauth2_scheme)]):
     client, database = await db.connect_to_mongo()
     current_user = await deps.get_current_user(database, token)
     return current_user
 
 
-@router.get("/users", response_model=List[User])
+@router.get("/users", response_model=List[UserOut])
 async def get_all_users():
     client, database = await db.connect_to_mongo()
     collection = database["users"]

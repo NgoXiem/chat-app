@@ -7,7 +7,9 @@ interface State {
 
 interface Message {
     fromSelf: boolean,
-    message: string
+    message: string,
+    to: string,
+    created_at: string
 }
 
 export const useMessageStore = defineStore('users', {
@@ -16,6 +18,9 @@ export const useMessageStore = defineStore('users', {
   }),
 
   actions: {
-
+    async createNewMessage (message: Message) {
+      const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
+      await apis.createNewMessage(message, token)
+    }
   }
 })
