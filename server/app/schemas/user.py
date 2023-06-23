@@ -1,4 +1,6 @@
 from pydantic import BaseModel, Field
+from app.schemas.pyObjectId import PyObjectId
+
 
 class User(BaseModel):
     user_name: str = Field(...)
@@ -17,18 +19,18 @@ class User(BaseModel):
         orm_mode = True
 
 class UserInDB(User):
-    _id: str = Field(..., alias="_id")
+    id: PyObjectId = Field(..., alias="_id")
     hashed_password: str = Field(...),
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
-        
 
 class UserOut(User):
-    _id: str = Field(..., alias="_id")
+    id: PyObjectId = Field(..., alias="_id")
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
+
 
 class UserLoginRequest(BaseModel):
     user_name: str = Field(...)

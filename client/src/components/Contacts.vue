@@ -38,14 +38,14 @@
 <script setup lang="ts">
 import {ref} from "vue" 
 import {useUserStore} from "@/stores/users";
+import type { UserInfo } from "@/stores/users";
 
 const store = useUserStore()
 const currentSelected = ref(0)
-const changeCurrentChat = (index, contact) => {
+const changeCurrentChat = (index: number, contact: UserInfo) => {
   currentSelected.value = index
   store.setCurrentChat(contact)
 }
-
 </script>
 
 

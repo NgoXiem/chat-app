@@ -1,5 +1,5 @@
 import axios from 'axios';
-
+import type { Message } from '@/stores/messages';
 /*
 *TODO:
 * 1. Write function to create authorization header
@@ -36,8 +36,12 @@ export const apis = {
     return axios.get(`${import.meta.env.VITE_APP_API_URL}/users`, { headers: authHeader(token) });
   },
 
-  createNewMessage(message, token: string) {
-    return axios.post(`${import.meta.env.VITE_APP_API_URL}/message`, { message}, { headers: authHeader(token) });
+  createNewMessage(message: Message, token: string) {
+    return axios.post(`${import.meta.env.VITE_APP_API_URL}/message`, message, { headers: authHeader(token) });
+  },
+
+  fetchMessages(token: string) {
+    return axios.get(`${import.meta.env.VITE_APP_API_URL}/messages`, { headers: authHeader(token) });
   }
 }
 

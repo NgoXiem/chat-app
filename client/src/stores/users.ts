@@ -13,8 +13,8 @@ interface State {
   currentChat: UserInfo | null
 }
 
-interface UserInfo {
-  id: number
+export interface UserInfo {
+  _id: string
   user_name: string
   email: string
   disabled: boolean, 
@@ -34,7 +34,7 @@ export const useUserStore = defineStore('users', {
   }),
   
   getters: {
-    availableContacts() {
+    availableContacts(): UserInfo[] {
       return this.contacts.filter(contact => contact.user_name !== this.user_info?.user_name)
     }
   },

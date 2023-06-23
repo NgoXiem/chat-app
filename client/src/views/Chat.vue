@@ -4,7 +4,7 @@
       <img src="../assets/loader.gif" alt="loader" class="loader" />
     </div>
     <div class="container" v-else>
-      <Contacts :changeChat="handleChatChange" />
+      <Contacts />
       <Welcome v-if="!store.currentChat"/>
       <ChatContainer v-else :socket="socket" />
     </div>
@@ -23,10 +23,6 @@ import { onMounted } from 'vue';
 const store = useUserStore()
 const socket = ref(undefined)
 let isLoading = ref(false)
-
-const handleChatChange = () => {
-
-}
 
 onMounted(async() => {
   isLoading.value = true

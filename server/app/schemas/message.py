@@ -4,6 +4,7 @@ from pydantic import BaseModel, Field
 class Message(BaseModel):
     message: str = Field(...)
     fromSelf: bool = Field(...)
+    sender: str = Field(...)
     to: str = Field(...)
     created_at: str = Field(...)
     class Config:

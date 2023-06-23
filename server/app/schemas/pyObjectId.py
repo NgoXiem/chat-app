@@ -1,4 +1,7 @@
 from bson import ObjectId
+import pydantic
+
+pydantic.json.ENCODERS_BY_TYPE[ObjectId]=str
 
 class PyObjectId(ObjectId):
     @classmethod

@@ -19,13 +19,13 @@
           <div
             :class="`message ${message.fromSelf ? 'sended' : 'recieved'}`"
           >
-            <div class="content ">
+            <div class="content">
               <p>{{message.message}}</p>
             </div>
           </div>
         </div>
       </div>
-      <ChatInput :handleSendMsg="handleSendMsg" />
+      <ChatInput />
     </div>
 </template>
 
@@ -37,10 +37,6 @@ import {useMessageStore} from "@/stores/messages";
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
-
-const handleSendMsg = () => {
-
-}
 
 </script>
 

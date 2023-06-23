@@ -10,7 +10,7 @@
         <input
             type="text"
             placeholder="Type your message here"
-            v-model = "msg"
+            v-model="msg"
         />
         <button type="submit">
             Send
@@ -22,25 +22,25 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useMessageStore } from '@/stores/messages';
+import { useUserStore } from '@/stores/users';
 const msg = ref('')
 
 const messageStore = useMessageStore()
+const userStore = useUserStore()
 
 const sendChat = async (event:Event) => {
     event.preventDefault()
     const message = {
         message: msg.value,
         fromSelf: true,
-        to: "",
-        created_at: new Date().toLocaleTimeString()
+        sender: userStore.user_info._id,
+        to: userStore.currentChat._id,
+        created_at: new Date().toISOString()
     }
-    console.log(message)
     // socket.value.emit("send-message", message)
     await messageStore.createNewMessage(message)
     msg.value = ""
 }
-
-
 </script>
 
 
