@@ -40,8 +40,9 @@ export const apis = {
     return axios.post(`${import.meta.env.VITE_APP_API_URL}/message`, message, { headers: authHeader(token) });
   },
 
-  fetchMessages(token: string) {
-    return axios.get(`${import.meta.env.VITE_APP_API_URL}/messages`, { headers: authHeader(token) });
+  fetchMessages(to: string, from: string, token: string) {
+    const filter = {to, from};
+    return axios.get(`${import.meta.env.VITE_APP_API_URL}/messages`, { headers: authHeader(token), params: filter });
   }
 }
 

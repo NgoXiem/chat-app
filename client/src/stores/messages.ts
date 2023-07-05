@@ -24,12 +24,12 @@ export const useMessageStore = defineStore('messages', {
       await apis.createNewMessage(message, token)
     },
 
-    async fetchMessages() {
+    async fetchMessages(from:string, to:string) {
       const token = localStorage.getItem('token') ? localStorage.getItem('token') : null;
-      const { data } = await apis.fetchMessages(token)
+      const { data } = await apis.fetchMessages(from, to, token)
       if(data) {
         this.messages = data
       }
-    }
+    },
   }
 })

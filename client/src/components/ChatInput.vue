@@ -23,6 +23,8 @@
 import { ref } from 'vue'
 import { useMessageStore } from '@/stores/messages';
 import { useUserStore } from '@/stores/users';
+import { socket } from '@/socket';
+import { onBeforeMount } from 'vue';
 const msg = ref('')
 
 const messageStore = useMessageStore()
@@ -37,10 +39,17 @@ const sendChat = async (event:Event) => {
         to: userStore.currentChat._id,
         created_at: new Date().toISOString()
     }
-    // socket.value.emit("send-message", message)
+    socket.emit('send_message', message)
     await messageStore.createNewMessage(message)
     msg.value = ""
-}
+};
+
+onBeforeMount(() => {
+  socket.on('receive_message', async (message) => {
+    console.log(message)
+  })
+})
+
 </script>
 
 
