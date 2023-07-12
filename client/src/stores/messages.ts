@@ -6,7 +6,6 @@ interface State {
 }
 
 export interface Message {
-    fromSelf: boolean,
     message: string,
     sender: string,
     to: string,
@@ -31,5 +30,9 @@ export const useMessageStore = defineStore('messages', {
         this.messages = data
       }
     },
+
+    setMessages(messages: Message[]) {
+      this.messages = messages
+    }
   }
 })

@@ -39,12 +39,22 @@ def connection(sid, message):
 @sio.event
 def disconnect(sid):
     print('Disconnect ', sid)
-   
+
+
+@sio.event
+def begin_chat(sid):
+    print('begin_chat', sid)
+    sio.enter_room(sid, 'chat_users')
+
+@sio.event
+def exit_chat(sid):
+    print('exit_chat', sid)
+    sio.leave_room(sid, 'chat_users')
 
 @sio.on('send_message')
 async def receive(sid, message):
     print('send_message', sid, message)
-    await sio.emit('receive_message', message)
-    
+    await sio.emit('receive_message', message, room='chat_user', skip_sid=True)
+
 
 app.mount('/', socket_app)

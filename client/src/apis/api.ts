@@ -41,7 +41,7 @@ export const apis = {
   },
 
   fetchMessages(to: string, from: string, token: string) {
-    const filter = {to, from};
+    const filter = {send_to: to, send_from: from};
     return axios.get(`${import.meta.env.VITE_APP_API_URL}/messages`, { headers: authHeader(token), params: filter });
   }
 }

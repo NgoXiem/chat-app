@@ -34,9 +34,19 @@ import ChatInput from './ChatInput.vue';
 import Logout from './Logout.vue';
 import {useUserStore} from "@/stores/users";
 import {useMessageStore} from "@/stores/messages";
+import {socket} from "@/socket";
+import {onMounted} from "vue";
+import type {Message} from "@/stores/messages";
+
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
+
+onMounted(() => {
+  socket.on('receive_message', async (message: Message) => {
+    messageStore.setMessages([...messageStore.messages, {...message, fromSelf: false} ] )
+  })
+})
 
 </script>
 

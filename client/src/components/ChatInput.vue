@@ -24,7 +24,7 @@ import { ref } from 'vue'
 import { useMessageStore } from '@/stores/messages';
 import { useUserStore } from '@/stores/users';
 import { socket } from '@/socket';
-import { onBeforeMount } from 'vue';
+import { onMounted } from 'vue';
 const msg = ref('')
 
 const messageStore = useMessageStore()
@@ -34,21 +34,15 @@ const sendChat = async (event:Event) => {
     event.preventDefault()
     const message = {
         message: msg.value,
-        fromSelf: true,
         sender: userStore.user_info._id,
         to: userStore.currentChat._id,
         created_at: new Date().toISOString()
     }
+    messageStore.setMessages([...messageStore.messages, {...message, fromSelf: true} ] )
     socket.emit('send_message', message)
     await messageStore.createNewMessage(message)
     msg.value = ""
 };
-
-onBeforeMount(() => {
-  socket.on('receive_message', async (message) => {
-    console.log(message)
-  })
-})
 
 </script>
 
