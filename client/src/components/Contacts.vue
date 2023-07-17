@@ -1,5 +1,5 @@
 <template>
-       <div class="contacts__container" v-if="store.user_info?.avatar">
+       <div class="contacts__container">
           <div class="brand">
             <img src="../assets/logo.svg" alt="logo" />
             <h3>chat</h3>
@@ -40,26 +40,23 @@ import {ref} from "vue"
 import {useUserStore} from "@/stores/users";
 import {useMessageStore} from "@/stores/messages";
 import type { UserInfo } from "@/stores/users";
-import {socket} from "@/socket";
+import { socket } from "@/socket";
 
 const store = useUserStore()
 const messageStore = useMessageStore()
-const currentSelected = ref(0)
+const currentSelected = ref()
 const changeCurrentChat = (index: number, contact: UserInfo) => {
-  socket.on('receive_message', () => {
-    console.log('receive message')
-  })
-  console.log('change chat'	)
-  socket.on('exit_chat', () => {
-    console.log('exit chat')
-  })
-  socket.on('begin_chat', () => {
-    console.log('begin chat')
-  })
+  socket.emit('exit_chat', () => {
+  });
+
+  socket.emit('begin_chat', () => {
+  });
+  
   currentSelected.value = index
   store.setCurrentChat(contact)
   messageStore.fetchMessages(store.user_info._id, contact._id)
 }
+
 </script>
 
 

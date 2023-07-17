@@ -15,9 +15,9 @@
         <Logout />
       </div>
       <div class="chat-messages">
-        <div ref={scrollRef} key={uuidv4()} v-for="message in messageStore.messages">
+        <div ref="scrollTarget" v-for="message in messageStore.messages">
           <div
-            :class="`message ${message.fromSelf ? 'sended' : 'recieved'}`"
+            :class="`message ${message.fromSelf ? 'sended' : 'received'}`"
           >
             <div class="content">
               <p>{{message.message}}</p>
@@ -35,16 +35,32 @@ import Logout from './Logout.vue';
 import {useUserStore} from "@/stores/users";
 import {useMessageStore} from "@/stores/messages";
 import {socket} from "@/socket";
-import {onMounted} from "vue";
+import {ref, onMounted} from "vue";
 import type {Message} from "@/stores/messages";
+import {watchEffect} from "vue";
+import { watch } from 'vue';
+import { computed } from 'vue';
 
 
 const userStore = useUserStore()
 const messageStore = useMessageStore()
 
+const scrollTarget = ref(null);
+
+
+watchEffect(() => {
+  if (messageStore.messages && scrollTarget.value) {
+    const target = scrollTarget.value[messageStore.messages.length - 1];
+    target?.scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
+
 onMounted(() => {
   socket.on('receive_message', async (message: Message) => {
-    messageStore.setMessages([...messageStore.messages, {...message, fromSelf: false} ] )
+    if(message['to'] == userStore.user_info._id) {
+      messageStore.setMessages([...messageStore.messages, {...message, fromSelf: false} ] )
+    }
   })
 })
 
@@ -116,7 +132,7 @@ onMounted(() => {
         background-color: #4f04ff21;
       }
     }
-    .recieved {
+    .received {
       justify-content: flex-start;
       .content {
         background-color: #9900ff20;

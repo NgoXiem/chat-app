@@ -54,7 +54,7 @@ def exit_chat(sid):
 @sio.on('send_message')
 async def receive(sid, message):
     print('send_message', sid, message)
-    await sio.emit('receive_message', message, room='chat_user', skip_sid=True)
+    await sio.emit('receive_message', message, room='chat_users')
 
 
 app.mount('/', socket_app)

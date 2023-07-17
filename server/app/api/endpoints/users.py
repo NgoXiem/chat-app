@@ -29,12 +29,12 @@ async def create_user(user: UserRegistrationRequest = Body(...)) -> Token:
     if await database["users"].find_one({"user_name": user.user_name}):
         raise HTTPException(status_code=400, detail="user_name already registered")
     else:
-        user = UserInDB(
-            user_name=user.user_name,
-            email=user.email,
-            disabled=user.disabled,
-            hashed_password=get_password_hash(user.password),
-        )
+        user = {
+            'user_name': user.user_name,
+            'email': user.email,
+            'disabled': user.disabled,
+            'hashed_password': get_password_hash(user.password)
+        }
         user = jsonable_encoder(user)
         new_user = await database["users"].insert_one(user)
         access_token_expires = timedelta(minutes=settings.access_token_expire_minutes)
