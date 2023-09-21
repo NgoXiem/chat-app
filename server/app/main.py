@@ -3,6 +3,7 @@ from app.api.endpoints import users
 from app.api.endpoints import messages
 from fastapi.middleware.cors import CORSMiddleware
 import socketio
+from app.services import smtp
 
 origins = ["*"]
 app = FastAPI()
@@ -55,6 +56,5 @@ def exit_chat(sid):
 async def receive(sid, message):
     print('send_message', sid, message)
     await sio.emit('receive_message', message, room='chat_users')
-
 
 app.mount('/', socket_app)
